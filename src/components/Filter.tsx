@@ -1,8 +1,10 @@
+'use client'
 import { Card } from "./ui/card"
 import { Label } from "./ui/label"
 import { Checkbox } from "./ui/checkbox"
 
 const Filter = () => {
+  
   return (
     <Card className="w-full shadow-none px-4 py-2 gap-2">
       <h2 className="text-lg font-semibold mb-3">Filter</h2>
@@ -11,16 +13,16 @@ const Filter = () => {
         {/* Job Type Filter */}
         <div>
           <h3 className="text-sm font-medium mb-2">Job Type</h3>
-          <div className="space-y-2">
+          <form className="space-y-2">
             <div className="flex items-center space-x-2">
-              <Checkbox id="remote" />
+              <Checkbox value={"remote"} id="remote" />
               <Label htmlFor="remote">Remote</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="hybrid" />
+              <Checkbox value={"hybrid"} id="hybrid" />
               <Label htmlFor="hybrid">Hybrid</Label>
             </div>
-          </div>
+          </form>
         </div>
 
         {/* Location Filter */}
