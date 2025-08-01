@@ -3,7 +3,7 @@
     import SeekerNavbar from '@/components/layout/SeekerNavbar'
     import React from 'react'
 
-    const SeekerLayout = ({ children }) => {
+    const dashboardLayout = ({ children }) => {
     return (
         <div>
         <header className="fixed top-0 left-0 z-50 w-full bg-white">
@@ -32,4 +32,4 @@
     )
     }
 
-    export default SeekerLayout
+    export default dashboardLayout

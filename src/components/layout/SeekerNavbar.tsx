@@ -8,12 +8,12 @@ const SeekerNavbar = () => {
   return (
     <div className="flex px-2 md:px-0 items-center bg-white h-18 justify-between">
         <div className="items-center gap-8 flex">
-            <Image 
-                src="/logo.svg"
+           <Link href={'/seeker/dashboard'}> <Image 
+                src="/logo.png"
                 alt="logo"
                 width={140}
                 height={140}
-            />
+            /></Link>
             <ul className="md:flex hidden  gap-6 items-center">
                 <Link href={'/'} className="text-[16px]  ">Jobs</Link>
                 <Link href={'/'} className="text-[16px]  ">Compnaines</Link>
