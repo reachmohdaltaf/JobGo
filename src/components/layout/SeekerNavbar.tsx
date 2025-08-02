@@ -32,7 +32,7 @@ const SeekerNavbar = () => {
        <Link href={'/login'}><Button className="font-bold" variant={'outline'}>Login</Button></Link> 
        <Link href={'/register'}><Button variant={'destructive'}>Register</Button></Link> 
          <div className="select hidden lg:flex">
-            <p>For Employers</p>
+            <Link href={'/employer/dashboard'}> <Button variant={"link"}>Post a job</Button> </Link>
         </div>
         </div>
 

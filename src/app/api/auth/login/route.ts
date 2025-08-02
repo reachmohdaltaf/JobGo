@@ -1,8 +1,10 @@
-import { signJwtToken } from "@/lib/jwt";
+import { signAccessToken, signRefreshToken } from "@/lib/jwt";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+
+
 
 export async function POST(req: NextRequest) {
   try {
@@ -25,35 +27,27 @@ export async function POST(req: NextRequest) {
       return new NextResponse("Invalid password", { status: 401 });
     }
 
-    const token = signJwtToken({
-      id: user.id,
-      email: user.email,
-    });
+    const accessToken = signAccessToken({id: user.id, email: user.email})
+    const refreshToken = signRefreshToken({id: user.id})
 
-    const response = NextResponse.json(
-      {
-        message: "Login successful",
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-        },
-      },
-      { status: 200 }
-    );
-
-    const cookieStore = await cookies();
-    if (!token) {
-  return new NextResponse("Token generation failed", { status: 500 });
-}
-    cookieStore.set("token", token, {
+    const cookieStore = cookies();
+    cookieStore.set("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
-    });
+      maxAge: 60 * 60 * 24 * 7
+    })
 
-    return response;
+    return NextResponse.json({
+      message: "Login Successfull",
+      accessToken,
+      user:{
+        id: user.id,
+        email: user.email,
+        name: user.name
+      }
+    })
+
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

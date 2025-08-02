@@ -46,3 +46,11 @@ model Application {
   userId      String   @db.ObjectId
   user        User     @relation("UserApplications", fields: [userId], references: [id])
 }
+
+model Favorite {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  job  String @db.ObjectId
+  user String @db.ObjectId
+
+  @@unique([job, user])
+}
