@@ -1,5 +1,6 @@
 import Filter from "@/components/Filter"
 import SeekerNavbar from "@/components/layout/SeekerNavbar"
+import { Suspense } from "react"
 
 const layout = ({children}: {children: React.ReactNode}) => {
   return (
@@ -17,7 +18,9 @@ const layout = ({children}: {children: React.ReactNode}) => {
             </aside>
 <section className="flex-1 basis-2/3 min-w-2/3 flex justify-center">
   <div className="w-full ">
+    <Suspense fallback={<div>Loading...</div>}>
     {children}
+    </Suspense>
   </div>
 </section>
 

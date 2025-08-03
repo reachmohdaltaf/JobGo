@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { JobProvider } from "@/context/JobContext";
 import QueryProvider from "@/providers/queryProvider";
 import ReduxProvider from "@/providers/reduxProvider";
 
@@ -32,9 +31,7 @@ export default function RootLayout({
       >
         <ReduxProvider>
           <QueryProvider>
-        <JobProvider>
         {children}
-        </JobProvider>
         </QueryProvider>
         </ReduxProvider>
       </body>

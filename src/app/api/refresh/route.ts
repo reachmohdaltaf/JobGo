@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 export const GET = async () => {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const refreshToken = cookieStore.get("refreshToken")?.value;
 
     if (!refreshToken) {
@@ -24,7 +24,7 @@ export const GET = async () => {
     }
 
     const user = await prisma.user.findUnique({
-      where: { id: payload.id },
+      where: { id: payload.id},
     });
 
     if (!user) {

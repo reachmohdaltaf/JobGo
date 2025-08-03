@@ -1,6 +1,4 @@
 'use client'
-import { JobContext } from "@/context/JobContext"
-import { useContext } from "react"
 import { Card } from "./ui/card"
 import { useJobs } from "@/hooks/useJobs"
 

@@ -3,7 +3,7 @@
     import SeekerNavbar from '@/components/layout/SeekerNavbar'
     import React from 'react'
 
-    const dashboardLayout = ({ children }) => {
+    const dashboardLayout = ({ children }: {children: React.ReactNode}) => {
     return (
         <div>
         <header className="fixed top-0 left-0 z-50 w-full bg-white">
