@@ -1,32 +1,21 @@
 'use client'
 
-import { useContext } from "react"
+import { useJobs } from "@/hooks/useJobs"
 import JobCard from "./JobCard"
-import { JobContext } from "@/context/JobContext"
-import Link from "next/link"
+import JobListSkeleton from "./common/JobListSkeleton"
 
 const JobContainer = () => {
-  const context = useContext(JobContext)
+  const { data: jobs, isLoading, error } = useJobs()
 
-  if (!context) {
-    return <div>Loading...</div>
-  }
-
-  const { jobs } = context
-  console.log("jobs in job container", jobs)
+  if (isLoading) return <JobListSkeleton count={5} />
+  if (error) return <p>{error.message}</p>
 
   return (
-   <div className="space-y-2 w-full">
-  {jobs.map((job: any) => (
-    <div key={job.job_id}>
-      <Link href={`job/${encodeURIComponent(job.job_id)}`}>
-        <JobCard job={job} />
-      </Link>
+    <div className="space-y-2 w-full">
+      {jobs.map((job: any) => (
+<JobCard key={job.id} job={job} />
+      ))}
     </div>
-  ))}
-</div>
-
-
   )
 }
 

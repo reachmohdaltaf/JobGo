@@ -2,9 +2,10 @@
 import { JobContext } from "@/context/JobContext"
 import { useContext } from "react"
 import { Card } from "./ui/card"
+import { useJobs } from "@/hooks/useJobs"
 
 const JobDetails = ({ id }: { id: string }) => {
-  const { jobs } = useContext(JobContext)
+  const {data: jobs, isLoading, error} = useJobs()
 
   if (!jobs || jobs.length === 0) {
     return <div>Loading...</div>

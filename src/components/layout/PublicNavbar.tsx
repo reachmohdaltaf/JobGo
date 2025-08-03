@@ -8,7 +8,7 @@ const PublicNavbar = () => {
   return (
     <div className="flex px-2 md:px-0 items-center bg-white h-18 justify-between">
         <div className="items-center gap-8 flex">
-           <Link href={'/seeker/dashboard'}> <Image 
+           <Link href={'/'}> <Image 
                 src="/logo.png"
                 alt="logo"
                 width={140}

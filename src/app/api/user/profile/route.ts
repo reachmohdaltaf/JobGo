@@ -1,22 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { cookies } from "next/headers";
-import { verifyJwtToken } from "@/lib/jwt";
+import { getAuth } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
   try {
-    const cookieStore = cookies();
-    const token =  cookieStore.get("token")?.value;
+    // Get authenticated user info (from token)
+    const decoded = await getAuth(); // Assume it returns { id: string }
 
-    if (!token) {
-      return new NextResponse("Unauthorized: No token", { status: 401 });
+    if (!decoded || !decoded.id) {
+      return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const decoded = verifyJwtToken(token); // Custom function to verify token
-    if (!decoded) {
-      return new NextResponse("Invalid token", { status: 403 });
-    }
-
+    // Find user in DB
     const user = await prisma.user.findUnique({
       where: {
         id: decoded.id,
@@ -34,9 +29,9 @@ export async function GET(req: NextRequest) {
       return new NextResponse("User not found", { status: 404 });
     }
 
-    return NextResponse.json({ user });
+    return NextResponse.json(user);
   } catch (error) {
-    console.error(error);
+    console.error("Error in /api/user/profile:", error);
     return new NextResponse("Server error", { status: 500 });
   }
 }

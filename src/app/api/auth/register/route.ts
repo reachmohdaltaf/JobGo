@@ -1,8 +1,7 @@
-import prisma from "@/lib/prisma";
-import bcrypt from "bcryptjs";
-import { signAccessToken, signRefreshToken } from "@/lib/jwt";
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import { hash } from "bcryptjs";
+import db from "@/lib/prisma";
+import { signAccessToken, signRefreshToken } from "@/lib/jwt";
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -12,14 +11,15 @@ export const POST = async (req: NextRequest) => {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
 
-    const existingUser = await prisma.user.findUnique({ where: { email } });
-    if (existingUser) {
-      return NextResponse.json({ error: "User already exists" }, { status: 400 });
+    const userExists = await db.user.findUnique({ where: { email } });
+
+    if (userExists) {
+      return NextResponse.json({ error: "User already exists" }, { status: 409 });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await hash(password, 10);
 
-    const newUser = await prisma.user.create({
+    const user = await db.user.create({
       data: {
         name,
         email,
@@ -27,11 +27,21 @@ export const POST = async (req: NextRequest) => {
       },
     });
 
-    const accessToken = signAccessToken({ id: newUser.id, email: newUser.email });
-    const refreshToken = signRefreshToken({ id: newUser.id });
+    const accessToken = signAccessToken({ id: user.id, email: user.email });
+    const refreshToken = signRefreshToken({ id: user.id, email: user.email });
 
-    const cookieStore = cookies();
-    cookieStore.set("refreshToken", refreshToken, {
+    // Create response first
+    const response = NextResponse.json({
+      message: "User registered successfully",
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+    }, { status: 201 });
+
+    // Set cookies on the response
+    response.cookies.set("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
@@ -39,16 +49,18 @@ export const POST = async (req: NextRequest) => {
       maxAge: 60 * 60 * 24 * 7, // 7 days
     });
 
-    const { password: _, ...userWithoutPassword } = newUser;
-
-    return NextResponse.json({
-      message: "Registration successful",
-      accessToken,
-      user: userWithoutPassword,
+    response.cookies.set("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+      maxAge: 60 * 15, // 15 minutes
     });
+
+    return response;
 
   } catch (error) {
     console.error("Register Error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 };

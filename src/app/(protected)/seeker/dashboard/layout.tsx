@@ -5,9 +5,9 @@
 
     const dashboardLayout = ({ children }) => {
     return (
-        <div>
-        <header className="fixed top-0 left-0 z-50 w-full bg-white">
-            <div className="max-w-screen-xl px-0 md:px-4 mx-auto">
+        <div className=''>
+        <header className="fixed  top-0 left-0 z-50 w-full bg-white">
+            <div className="max-w-screen-xl px-2 md:px-4 mx-auto">
             <SeekerNavbar />
             </div>
         </header>
