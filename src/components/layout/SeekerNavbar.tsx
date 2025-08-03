@@ -40,7 +40,6 @@ const { data: user, isLoading: userLoading, error } = useUser()
     return () => clearTimeout(delayedSearch)
   }, [searchQuery])
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
