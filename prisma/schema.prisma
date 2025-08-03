@@ -33,7 +33,9 @@ model Job {
   job_description           String?         // Renamed from `description`
   job_location              String?        // Renamed from `location`
   job_employment_type_text  String?         // New field
-  job_posted_human_readable String?         // New field (e.g., "2 days ago")
+  job_posted_human_readable String?
+  salary_min                 Int? 
+  salary_max                 Int?         // New field (e.g., "2 days ago")
   createdAt                 DateTime       @default(now())
   postedById                String?        @db.ObjectId
   postedBy                  User?          @relation("UserJobs", fields: [postedById], references: [id])
