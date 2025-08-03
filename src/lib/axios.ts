@@ -1,7 +1,12 @@
 import axios from "axios";
 const axiosInstance = axios.create({
-    baseURL: "http://localhost:3000/api", //apne backend ka url
-    withCredentials: true
-})
+  baseURL: typeof window === 'undefined'
+    ? process.env.NEXT_PUBLIC_VERCEL_URL
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api`
+      : "http://localhost:3000/api"
+    : "/api",
+  withCredentials: true,
+});
+
 
 export default axiosInstance
