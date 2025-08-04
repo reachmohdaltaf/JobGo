@@ -1,10 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
-import axios from '@/lib/axios';
 import { loginSuccess } from '@/redux/features/auth/authSlice';
+import axiosInstance from '@/lib/axios';
 
 const loginUser = async (data: { email: string; password: string }) => {
-  const res = await axios.post('/auth/login', data);
+  const res = await axiosInstance.post('/auth/login', data);
   return res.data;
 };
 

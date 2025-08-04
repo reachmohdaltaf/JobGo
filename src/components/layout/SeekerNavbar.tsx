@@ -98,9 +98,9 @@ const { data: user, isLoading: userLoading, error } = useUser()
           />
         </Link>
         <ul className="md:flex hidden gap-6 items-center">
-          <Link href={'/'} className="text-[16px]">Jobs</Link>
-          <Link href={'/'} className="text-[16px]">Companies</Link>
-          <Link href={'/'} className="text-[16px]">Services</Link>
+          <Link href={'/seeker/dashboard'} className="text-[16px]">Jobs</Link>
+          <Link href={'/seeker/dashboard'} className="text-[16px]">Companies</Link>
+          <Link href={'/seeker/dashboard'} className="text-[16px]">Services</Link>
         </ul>
       </div>
     

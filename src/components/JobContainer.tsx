@@ -11,7 +11,7 @@ if(error) return <p>{error.message}</p>
 console.log(jobs)
   return (
    <div className="space-y-2 w-full">
-  {jobs.map((job: any) => (
+  {jobs?.map((job: any) => (
     <div key={job.id}>
       <Link href={`job/${encodeURIComponent(job.job_id)}`}>
         <JobCard job={job}  />

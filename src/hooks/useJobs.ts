@@ -1,10 +1,10 @@
 // hooks/useJobs.ts
+import axiosInstance from '@/lib/axios'
 import { useQuery } from '@tanstack/react-query'
 
 const fetchJobs = async () => {
-  const res = await fetch('/api/job') // assuming that's your endpoint
-  if (!res.ok) throw new Error('Failed to fetch jobs')
-  return res.json()
+  const res = await axiosInstance.get('/job') // assuming that's your endpoint
+  return res.data
 }
 
 export const useJobs = () => {

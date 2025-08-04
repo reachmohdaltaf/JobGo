@@ -36,8 +36,6 @@ export const POST = async (req: NextRequest) => {
 
   } catch (error: any) {
     console.error("Error creating job:", error);
-    const isAuthError = error.message.includes("Unauthenticated");
-    return new NextResponse(error.message, { status: isAuthError ? 401 : 500 });
   }
 };
 

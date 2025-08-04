@@ -12,7 +12,6 @@ export const useUser = () => {
   return useQuery({
     queryKey: ['user'],
     queryFn: User,
-    enabled: typeof window !== 'undefined', // ✅ Only runs on client
   });
 };
 
