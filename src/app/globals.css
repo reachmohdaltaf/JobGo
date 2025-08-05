@@ -117,5 +117,12 @@
   body {
     @apply bg-background text-foreground;
     scroll-behavior: smooth;
+    
   }
+
+}
+
+body::-webkit-scrollbar{
+  
+  display: none;
 }

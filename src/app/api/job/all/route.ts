@@ -1,24 +1,21 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-// Pure GET for all jobs (no filter)
 export const GET = async () => {
   try {
     const jobs = await prisma.job.findMany({
+      include: {
+        company: true,
+        postedBy: true,
+      },
       orderBy: {
         createdAt: "desc",
-      },
-      include: {
-        postedBy: {
-          select: { id: true, name: true },
-        },
-        applications: true,
       },
     });
 
     return NextResponse.json(jobs);
   } catch (error) {
-    console.error("Error fetching all jobs:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    console.log("Fetch All Jobs Error:", error);
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 };

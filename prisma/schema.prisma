@@ -16,32 +16,53 @@ enum Role {
 }
 
 model User {
-  id          String         @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  email       String         @unique
-  password    String
-  role        Role           @default(CANDIDATE)
-  createdAt   DateTime       @default(now())
-  jobs        Job[]          @relation("UserJobs")
-  applications Application[] @relation("UserApplications")
+  id             String         @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  email          String         @unique
+  password       String
+  role           Role           @default(CANDIDATE)
+  createdAt      DateTime       @default(now())
+  applications   Application[]  @relation("UserApplications")
+  ownedCompanies Company[]      @relation("UserCompanies")
+  postedJobs     Job[]          @relation("UserJobs")
+  favorites      Favorite[]     @relation("UserFavorites")
+  reviews        Reviews[]      @relation("UserReviews")
+
+}
+
+model Company {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  jobs      Job[]    @relation("CompanyJobs")
+
+  ownerId   String   @db.ObjectId
+  owner     User     @relation("UserCompanies", fields: [ownerId], references: [id])
+  reviews   Reviews[]@relation("CompanyReviews")
 }
 
 model Job {
   id                        String         @id @default(auto()) @map("_id") @db.ObjectId
-  job_title                     String
-  employer_name             String?         // Renamed from `company`
-  job_description           String?         // Renamed from `description`
-  job_location              String?        // Renamed from `location`
-  job_employment_type_text  String?         // New field
+  job_title                String
+  employer_name            String?
+  job_description          String?
+  job_location             String?
+  job_employment_type_text String?
   job_posted_human_readable String?
-  salary_min                 Int? 
-  salary_max                 Int?         // New field (e.g., "2 days ago")
-  createdAt                 DateTime       @default(now())
-  postedById                String?        @db.ObjectId
-  postedBy                  User?          @relation("UserJobs", fields: [postedById], references: [id])
-  applications              Application[]  @relation("JobApplications")
+  salary_min               Int?
+  salary_max               Int?
+  createdAt                DateTime        @default(now())
+  postedByUserId           String?         @db.ObjectId
+  postedBy                 User?           @relation("UserJobs", fields: [postedByUserId], references: [id])
+  companyId                String          @db.ObjectId
+  company                  Company         @relation("CompanyJobs", fields: [companyId], references: [id])
+  applications             Application[]   @relation("JobApplications")
+  favorites                Favorite[]      @relation("JobFavorites")
+  reviews                  Reviews[]        @relation("JobReviews")
+  @@index([createdAt])
 }
-
 
 model Application {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -51,12 +72,28 @@ model Application {
   job         Job      @relation("JobApplications", fields: [jobId], references: [id])
   userId      String   @db.ObjectId
   user        User     @relation("UserApplications", fields: [userId], references: [id])
+
+  @@index([createdAt])
 }
 
 model Favorite {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  job  String @db.ObjectId
-  user String @db.ObjectId
+  id      String  @id @default(auto()) @map("_id") @db.ObjectId
+  jobId   String  @db.ObjectId
+  job     Job     @relation("JobFavorites", fields: [jobId], references: [id])
+  userId  String  @db.ObjectId
+  user    User    @relation("UserFavorites", fields: [userId], references: [id])
 
-  @@unique([job, user])
+  @@unique([jobId, userId])
+}
+
+model Reviews {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  rating Int
+  review String
+  jobId String @db.ObjectId
+  job Job @relation("JobReviews",fields: [jobId], references: [id])
+  userId String @db.ObjectId
+  user User @relation("UserReviews",fields: [userId], references: [id])
+  companyId String @db.ObjectId
+  company Company @relation("CompanyReviews",fields: [companyId], references: [id])
 }

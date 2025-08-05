@@ -2,7 +2,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 const fetchFilteredJobs = async (searchParams: string) => {
-  const res = await fetch(`/api/job${searchParams}`)
+  const res = await fetch(`/api/job/search${searchParams}`)
   if (!res.ok) throw new Error('Failed to fetch jobs')
   return res.json()
 }

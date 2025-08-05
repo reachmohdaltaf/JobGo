@@ -3,7 +3,7 @@ import axiosInstance from '@/lib/axios'
 import { useQuery } from '@tanstack/react-query'
 
 const fetchJobs = async () => {
-  const res = await axiosInstance.get('/job') // assuming that's your endpoint
+  const res = await axiosInstance.get('/job/all') // assuming that's your endpoint
   return res.data
 }
 
