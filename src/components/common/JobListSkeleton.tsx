@@ -7,7 +7,7 @@ const JobListSkeleton = ({ count = 5 }: { count?: number }) => {
       {[...Array(count)].map((_, i) => (
         <Card
           key={i}
-          className="w-full cursor-pointer bg-white rounded-xl shadow-none hover:shadow-sm transition duration-300 border p-4"
+          className="w-full cursor-pointer rounded-xl hover:shadow-sm transition duration-300 p-4"
         >
           <div className="flex flex-wrap justify-between items-start">
             {/* Left Section Skeleton */}

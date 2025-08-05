@@ -4,8 +4,9 @@ import Image from "next/image"
 import Link from "next/link"
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
-import { Search } from "lucide-react"
+import { Briefcase, Search } from "lucide-react"
 import { useUser } from "@/hooks/getUser"
+import ThemeToggle from "../ThemeToggle"
 
 const PublicNavbar = () => {
   const { data: user, isLoading: userLoading, error } = useUser()
@@ -14,12 +15,7 @@ const PublicNavbar = () => {
     <div className="flex px-2 md:px-0 items-center bg-background h-18 justify-between">
         <div className="items-center gap-8 flex">
            <Link href={'/'}> 
-             <Image 
-                src="/logo.png"
-                alt="logo"
-                width={140}
-                height={140}
-            />
+            <Briefcase className="w-10 h-10" />
            </Link>
             <ul className="md:flex hidden gap-6 items-center">
                 <Link href={'/seeker/dashboard'} className="text-[16px]">Jobs</Link>
@@ -42,11 +38,17 @@ const PublicNavbar = () => {
               <Link href={'/register'}>
                 <Button variant={'destructive'}>Register</Button>
               </Link>
+              <ThemeToggle/>
             </>
           ) : (
-            <div className="w-9 h-9 bg-primary text-white rounded-full flex items-center justify-center font-semibold text-sm uppercase">
+            <div className="flex items-center gap-2">
+              <div className="w-9 h-9 bg-primary text-black dark:text-white rounded-full flex items-center justify-center font-semibold text-sm uppercase">
               {user.name?.charAt(0)}
             </div>
+                          <ThemeToggle/>
+
+            </div>
+            
           )}
 
           <div className="select hidden lg:flex">
