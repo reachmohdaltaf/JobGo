@@ -11,7 +11,7 @@ const PublicNavbar = () => {
   const { data: user, isLoading: userLoading, error } = useUser()
 
   return (
-    <div className="flex px-2 md:px-0 items-center bg-white h-18 justify-between">
+    <div className="flex px-2 md:px-0 items-center bg-background h-18 justify-between">
         <div className="items-center gap-8 flex">
            <Link href={'/'}> 
              <Image 

@@ -25,11 +25,14 @@ import {
   LogOut, 
   FileText,
   Heart,
-  Bell
+  Bell,
+  Briefcase,
+  Moon
 } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { useUser } from "@/hooks/getUser"
+import ThemeToggle from "../ThemeToggle"
 
 interface Job {
   id: string
@@ -116,19 +119,13 @@ const SeekerNavbar = () => {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-card ">
+        <header className="md:px-4 flex items-center justify-between bg-background lg:bg-transparent rounded-md bg-clip-padding backdrop-filter lg:backdrop-blur-xl lg:bg-opacity-30 fixed w-full md:h-16 h-16">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         
         {/* Logo and Navigation */}
         <div className="flex items-center gap-8">
           <Link href="/seeker/dashboard" className="flex items-center space-x-2">
-            <Image 
-              src="/logo.png"
-              alt="logo"
-              width={120}
-              height={40}
-              className="h-10 w-auto"
-            />
+            <Briefcase/>
           </Link>
           
           <nav className="hidden md:flex items-center space-x-6">
@@ -171,7 +168,7 @@ const SeekerNavbar = () => {
           {/* Search Dropdown */}
           {showDropdown && (
             <Card className="absolute top-full left-0 right-0 mt-2 z-50 shadow-lg">
-              <CardContent className="p-0 max-h-96 overflow-y-auto">
+<CardContent className="p-0 max-h-96 overflow-y-auto hide-scrollbar">
                 {isLoading ? (
                   <div className="flex flex-col items-center justify-center p-6 space-y-2">
                     <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
@@ -242,7 +239,7 @@ const SeekerNavbar = () => {
               Post a Job
             </Button>
           </Link>
-
+<ThemeToggle/>
           {/* Authentication Section */}
           {!user ? (
             <div className="flex items-center gap-2">
@@ -268,13 +265,14 @@ const SeekerNavbar = () => {
                 </span>
               </Button>
 
+
               {/* User Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                     <Avatar className="h-9 w-9">
                       <AvatarImage src={user.avatar} alt={user.name} />
-                      <AvatarFallback className="bg-primary text-primary-foreground">
+                      <AvatarFallback className="bg-primary">
                         {user.name?.charAt(0)?.toUpperCase()}
                       </AvatarFallback>
                     </Avatar>

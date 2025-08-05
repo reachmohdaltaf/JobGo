@@ -5,9 +5,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from './ui/card'
-import { Button } from './ui/button'
-import { Badge } from './ui/badge'
+} from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { 
   Bookmark, 
   BookmarkCheck,
@@ -133,7 +133,7 @@ const JobCard: React.FC<JobCardProps> = ({
 
   return (
     <Card 
-      className="w-full cursor-pointer bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 hover:border-gray-300 p-0 overflow-hidden"
+      className="w-full cursor-pointer hover:shadow-md transition-all duration-300 p-0 overflow-hidden"
       onClick={handleCardClick}
     >
       <CardContent className="p-6">
@@ -142,19 +142,19 @@ const JobCard: React.FC<JobCardProps> = ({
           <div className="flex-1 min-w-0 space-y-3">
             {/* Job Title and Company */}
             <div className="space-y-1">
-              <CardTitle className="text-xl font-semibold text-gray-900 hover:text-primary transition-colors cursor-pointer line-clamp-2">
+              <CardTitle className="text-xl font-semibold hover:text-primary transition-colors cursor-pointer line-clamp-2">
                 {job_title}
               </CardTitle>
-              <div className="flex items-center gap-2 text-gray-600">
-                <Building2 size={16} className="text-gray-400 flex-shrink-0" />
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Building2 size={16} className="flex-shrink-0" />
                 <span className="font-medium">{companyName}</span>
               </div>
             </div>
 
             {/* Job Details */}
-            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
               {job_employment_type_text && (
-                <Badge variant="secondary" className="bg-blue-50 text-blue-700 hover:bg-blue-100">
+                <Badge variant="secondary">
                   <Briefcase size={12} className="mr-1" />
                   {job_employment_type_text}
                 </Badge>
@@ -162,34 +162,34 @@ const JobCard: React.FC<JobCardProps> = ({
               
               {job_location && (
                 <div className="flex items-center gap-1">
-                  <MapPin size={14} className="text-gray-400" />
+                  <MapPin size={14} />
                   <span>{job_location}</span>
                 </div>
               )}
 
               {salaryRange && (
                 <div className="flex items-center gap-1">
-                  <DollarSign size={14} className="text-green-500" />
-                  <span className="text-green-600 font-medium">{salaryRange}</span>
+                  <DollarSign size={14} />
+                  <span className="font-medium">{salaryRange}</span>
                 </div>
               )}
             </div>
 
             {/* Job Description */}
-            <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
+            <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
               {truncateDescription(job_description)}
             </p>
 
             {/* Posted Date and Posted By */}
-            <div className="flex items-center gap-4 text-xs text-gray-500">
+            <div className="flex items-center gap-4 text-xs text-muted-foreground">
               <div className="flex items-center gap-1">
-                <Calendar size={12} className="text-gray-400" />
+                <Calendar size={12} />
                 <span>{formatPostedDate()}</span>
               </div>
               
               {postedBy && (
                 <div className="flex items-center gap-1">
-                  <User size={12} className="text-gray-400" />
+                  <User size={12} />
                   <span>Posted by {postedBy.name}</span>
                 </div>
               )}
@@ -199,7 +199,7 @@ const JobCard: React.FC<JobCardProps> = ({
           {/* Right Section */}
           <div className="flex flex-col items-center gap-4 flex-shrink-0">
             {/* Company Avatar */}
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-100 text-blue-700 font-bold text-lg border border-gray-200">
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-secondary text-secondary-foreground font-bold text-lg border">
               {companyName.charAt(0).toUpperCase()}
             </div>
 
@@ -210,8 +210,8 @@ const JobCard: React.FC<JobCardProps> = ({
               onClick={handleBookmarkClick}
               className={`h-8 w-8 rounded-full transition-colors ${
                 isBookmarked 
-                  ? 'text-blue-600 bg-blue-50 hover:bg-blue-100' 
-                  : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
+                  ? 'text-primary bg-accent hover:bg-accent/80' 
+                  : 'hover:bg-accent'
               }`}
             >
               {isBookmarked ? (
@@ -224,19 +224,19 @@ const JobCard: React.FC<JobCardProps> = ({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+        <div className="flex items-center justify-between mt-4 pt-4 border-t">
           <div className="flex gap-2">
-            <Button size="sm" className="bg-primary hover:bg-primary/90">
+            <Button size="sm" variant={'outline'}>
               Apply Now
             </Button>
-            <Button variant="outline" size="sm">
+            <Button variant={'outline'} size="sm">
               <ExternalLink size={14} className="mr-1" />
               View Details
             </Button>
           </div>
           
           {/* Company info */}
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-muted-foreground">
             ID: {id.slice(-8)}
           </div>
         </div>

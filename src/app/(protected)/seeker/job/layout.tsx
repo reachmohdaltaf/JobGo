@@ -5,7 +5,7 @@ import SeekerNavbar from "@/components/layout/SeekerNavbar"
 const JobPageLayout = ({children}: {children: React.ReactNode}) => {
   return (
        <div>
-        <header className="fixed top-0 left-0 z-50 w-full bg-white">
+        <header className="fixed top-0 left-0 z-50 w-full bg-card">
             <div className="max-w-screen-xl px-0 md:px-4 mx-auto">
             <SeekerNavbar />
             </div>

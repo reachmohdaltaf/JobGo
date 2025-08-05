@@ -7,7 +7,7 @@ import PublicNavbar from '@/components/layout/PublicNavbar'
     const HomeLayout = ({ children }: {children: React.ReactNode}) => {
     return (
         <div>
-        <header className="fixed top-0 left-0 z-50 w-full bg-white">
+        <header className="fixed top-0 left-0 z-50 w-full bg-background">
             <div className="max-w-screen-xl px-0 md:px-4 mx-auto">
             <PublicNavbar />
             </div>
