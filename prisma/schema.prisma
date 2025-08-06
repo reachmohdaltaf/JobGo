@@ -68,6 +68,7 @@ model Job {
 model Application {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   coverLetter String?
+  resume      String?
   createdAt   DateTime @default(now())
   jobId       String   @db.ObjectId
   job         Job      @relation("JobApplications", fields: [jobId], references: [id])

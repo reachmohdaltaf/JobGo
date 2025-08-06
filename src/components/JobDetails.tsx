@@ -10,7 +10,7 @@ const JobDetails = ({ id }: { id: string }) => {
     return <div>Loading...</div>
   }
 
-  const job = jobs.find((job: any) => String(job.job_id) === String(id))
+const job = jobs.find((job: any) => String(job.id) === String(id))
 
   if (!job) return <div>Job not found</div>
 

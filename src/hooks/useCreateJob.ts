@@ -2,16 +2,19 @@ import axiosInstance from "@/lib/axios";
 import { useMutation } from "@tanstack/react-query";
 
 interface JobData {
-  job_title: string;
-  employer_name: string;
-  job_description: string;
+ job_title: string;
+  employer_name?: string;
+  job_description?: string;
   job_location?: string;
   job_employment_type_text?: string;
   job_posted_human_readable?: string;
+  salary_min?: number;       
+  salary_max?: number;
+  companyId: string;
 }
 
 export const createJob = async (data: JobData) => {
-  const res = await axiosInstance.post("/job", data);
+  const res = await axiosInstance.post("/job/create", data);
   return res.data;
 };
 

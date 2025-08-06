@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import type { NextApiRequest } from "next"; // Only needed if you use NextApiRequest
 import prisma from "@/lib/prisma";
 
 export const GET = async (req: NextRequest, context: { params: Promise<{ id: string }> }) => {

@@ -19,6 +19,7 @@ import {
   User,
   ExternalLink
 } from 'lucide-react'
+import Link from 'next/link'
 
 interface Job {
   id: string
@@ -125,16 +126,14 @@ const JobCard: React.FC<JobCardProps> = ({
     setIsBookmarked(!isBookmarked)
   }
 
-  const handleCardClick = () => {
-    onJobClick?.(job)
-  }
+
 
   const salaryRange = formatSalary(salary_min, salary_max)
 
   return (
     <Card 
       className="w-full cursor-pointer hover:shadow-md transition-all duration-300 p-0 overflow-hidden"
-      onClick={handleCardClick}
+      
     >
       <CardContent className="p-6">
         <div className="flex justify-between items-start gap-4">
@@ -226,13 +225,13 @@ const JobCard: React.FC<JobCardProps> = ({
         {/* Action Buttons */}
         <div className="flex items-center justify-between mt-4 pt-4 border-t">
           <div className="flex gap-2">
-            <Button size="sm" variant={'outline'}>
+           <Link href={'/'}><Button size="sm" variant={'outline'}>
               Apply Now
-            </Button>
-            <Button variant={'outline'} size="sm">
+            </Button></Link> 
+            <Link href={`/seeker/job/${id}`}><Button  variant={'outline'} size="sm">
               <ExternalLink size={14} className="mr-1" />
               View Details
-            </Button>
+            </Button></Link>
           </div>
           
           {/* Company info */}

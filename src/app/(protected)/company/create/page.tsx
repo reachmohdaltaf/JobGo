@@ -1,106 +1,118 @@
-'use client'
-import React, { useState } from 'react'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
-import { useCreateCompany } from '@/hooks/useCreateCompany'
+// app/company/[id]/createjob/page.tsx
 
-const CreateCompany = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    industry: '',
-    location: '',
-    description: ''
-  })
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState('')
-  const {mutate: createCompany} = useCreateCompany()
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }))
-  }
+'use client';
 
-  const handleSubmit = async () => {
-    setLoading(true)
-    setMessage('')
-    createCompany(formData)
-  }
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { useRouter, useParams } from "next/navigation"; // ✅ useParams added
+import axiosInstance from "@/lib/axios";
+
+const CreateJobPage = () => {
+  const [job_title, setTitle] = useState("");
+  const [job_description, setDescription] = useState("");
+  const [job_location, setLocation] = useState("");
+  const [salary_min, setMin] = useState("");
+  const [salary_max, setMax] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
+  const params = useParams(); // ✅ useParams hook
+  const id = params.id as string; // 👈 cast it
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await axiosInstance.post("/api/job", {
+        job_title,
+        job_description,
+        job_location,
+        salary_min: Number(salary_min),
+        salary_max: Number(salary_max),
+        companyId: id, // ✅ use it here
+      });
+      router.push(`/company/detail/${id}`);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create job");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="max-w-md mx-auto p-6 space-y-6">
-      <h1 className="text-2xl font-bold text-center">Create Company</h1>
-      
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="name">Company Name *</Label>
+    <div className="max-w-2xl mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-6">Create Job Posting</h1>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <Label htmlFor="title">Job Title</Label>
           <Input
-            id="name"
-            name="name"
-            type="text"
-            value={formData.name}
-            onChange={handleInputChange}
-            placeholder="Enter company name"
+            id="title"
+            placeholder="e.g. Frontend Developer"
+            value={job_title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="industry">Industry *</Label>
-          <Input
-            id="industry"
-            name="industry"
-            type="text"
-            value={formData.industry}
-            onChange={handleInputChange}
-            placeholder="Enter industry"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="location">Location *</Label>
-          <Input
-            id="location"
-            name="location"
-            type="text"
-            value={formData.location}
-            onChange={handleInputChange}
-            placeholder="Enter location"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="description">Description</Label>
+        <div>
+          <Label htmlFor="description">Job Description</Label>
           <Textarea
             id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleInputChange}
-            placeholder="Enter company description (optional)"
-            rows={3}
+            placeholder="Write about the job..."
+            value={job_description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
           />
         </div>
 
-        <Button 
-          onClick={handleSubmit}
-          disabled={loading || !formData.name || !formData.industry || !formData.location}
-          className="w-full"
-        >
-          {loading ? 'Creating...' : 'Create Company'}
+        <div>
+          <Label htmlFor="location">Location</Label>
+          <Input
+            id="location"
+            placeholder="e.g. Remote, Delhi, etc."
+            value={job_location}
+            onChange={(e) => setLocation(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="flex gap-4">
+          <div className="w-full">
+            <Label htmlFor="min">Min Salary</Label>
+            <Input
+              id="min"
+              type="number"
+              placeholder="e.g. 30000"
+              value={salary_min}
+              onChange={(e) => setMin(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="w-full">
+            <Label htmlFor="max">Max Salary</Label>
+            <Input
+              id="max"
+              type="number"
+              placeholder="e.g. 70000"
+              value={salary_max}
+              onChange={(e) => setMax(e.target.value)}
+              required
+            />
+          </div>
+        </div>
+
+        <Button type="submit" disabled={loading}>
+          {loading ? "Creating..." : "Create Job"}
         </Button>
-
-        {message && (
-          <p className={`text-sm text-center ${
-            message.includes('successfully') ? 'text-green-600' : 'text-red-600'
-          }`}>
-            {message}
-          </p>
-        )}
-      </div>
+      </form>
     </div>
-  )
-}
+  );
+};
 
-export default CreateCompany
+export default CreateJobPage;
