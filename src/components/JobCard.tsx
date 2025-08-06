@@ -1,25 +1,27 @@
+'use client'
+
 import React, { useState } from 'react'
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
   CardTitle,
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Bookmark, 
+import {
+  Bookmark,
   BookmarkCheck,
-  Briefcase, 
-  MapPin, 
+  Briefcase,
+  MapPin,
   DollarSign,
   Calendar,
   Building2,
   User,
-  ExternalLink
+  ExternalLink,
+  BookMarked,
 } from 'lucide-react'
 import Link from 'next/link'
+import { useAddToFavourite } from '@/hooks/useAddToFavourite'
 
 interface Job {
   id: string
@@ -52,21 +54,10 @@ interface Job {
 
 interface JobCardProps {
   job: Job
-  onSave?: (jobId: string) => void
-  onUnsave?: (jobId: string) => void
   isSaved?: boolean
-  onJobClick?: (job: Job) => void
 }
 
-const JobCard: React.FC<JobCardProps> = ({ 
-  job, 
-  onSave, 
-  onUnsave, 
-  isSaved = false,
-  onJobClick 
-}) => {
-  const [isBookmarked, setIsBookmarked] = useState(isSaved)
-
+const JobCard: React.FC<JobCardProps> = ({ job, isSaved = false }) => {
   const {
     id,
     job_title,
@@ -81,76 +72,68 @@ const JobCard: React.FC<JobCardProps> = ({
     postedBy,
   } = job
 
-  // Get company name from company object or fallback to employer_name or postedBy name
-  const companyName = company?.name || job.employer_name || postedBy?.name || 'Unknown Company'
-  
-  // Format salary range
-  const formatSalary = (min?: number, max?: number) => {
+  const companyName =
+    company?.name || job.employer_name || postedBy?.name || 'Unknown Company'
+  const salaryRange = formatSalary(salary_min, salary_max)
+
+  const { mutate, isPending } = useAddToFavourite()
+
+  const [isBookmarked, setIsBookmarked] = useState(isSaved)
+
+  const handleBookmarkClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+
+    mutate(id, {
+     onSuccess: (res) => {
+    setIsBookmarked(res.isFavourited)
+
+console.log(res.isFavourited)
+}
+
+    })
+  }
+
+  function formatSalary(min?: number, max?: number) {
     if (!min && !max) return null
-    if (min && max) {
-      return `$${min.toLocaleString()} - $${max.toLocaleString()}`
-    }
+    if (min && max) return `$${min.toLocaleString()} - $${max.toLocaleString()}`
     if (min) return `From $${min.toLocaleString()}`
     if (max) return `Up to $${max.toLocaleString()}`
     return null
   }
 
-  // Format posted date
-  const formatPostedDate = () => {
+  function formatPostedDate() {
     if (job_posted_human_readable) return job_posted_human_readable
-    
     const postedDate = new Date(createdAt)
     const now = new Date()
     const diffTime = Math.abs(now.getTime() - postedDate.getTime())
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    
     if (diffDays === 1) return '1 day ago'
     if (diffDays < 7) return `${diffDays} days ago`
     if (diffDays < 30) return `${Math.ceil(diffDays / 7)} weeks ago`
     return `${Math.ceil(diffDays / 30)} months ago`
   }
 
-  // Truncate description
-  const truncateDescription = (text: string, maxLength: number = 150) => {
+  function truncateDescription(text: string, maxLength: number = 150) {
     if (text.length <= maxLength) return text
     return text.substring(0, maxLength).trim() + '...'
   }
 
-  const handleBookmarkClick = (e: React.MouseEvent) => {
-    e.stopPropagation() // Prevent card click
-    if (isBookmarked) {
-      onUnsave?.(id)
-    } else {
-      onSave?.(id)
-    }
-    setIsBookmarked(!isBookmarked)
-  }
-
-
-
-  const salaryRange = formatSalary(salary_min, salary_max)
-
   return (
-    <Card 
-      className="w-full cursor-pointer hover:shadow-md transition-all duration-300 p-0 overflow-hidden"
-      
-    >
+    <Card className="w-full cursor-pointer hover:shadow-md transition-all duration-300 p-0 overflow-hidden">
       <CardContent className="p-6">
         <div className="flex justify-between items-start gap-4">
           {/* Left Section */}
           <div className="flex-1 min-w-0 space-y-3">
-            {/* Job Title and Company */}
             <div className="space-y-1">
               <CardTitle className="text-xl font-semibold hover:text-primary transition-colors cursor-pointer line-clamp-2">
                 {job_title}
               </CardTitle>
               <div className="flex items-center gap-2 text-muted-foreground">
-                <Building2 size={16} className="flex-shrink-0" />
+                <Building2 size={16} />
                 <span className="font-medium">{companyName}</span>
               </div>
             </div>
 
-            {/* Job Details */}
             <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
               {job_employment_type_text && (
                 <Badge variant="secondary">
@@ -158,14 +141,12 @@ const JobCard: React.FC<JobCardProps> = ({
                   {job_employment_type_text}
                 </Badge>
               )}
-              
               {job_location && (
                 <div className="flex items-center gap-1">
                   <MapPin size={14} />
                   <span>{job_location}</span>
                 </div>
               )}
-
               {salaryRange && (
                 <div className="flex items-center gap-1">
                   <DollarSign size={14} />
@@ -174,18 +155,15 @@ const JobCard: React.FC<JobCardProps> = ({
               )}
             </div>
 
-            {/* Job Description */}
             <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
               {truncateDescription(job_description)}
             </p>
 
-            {/* Posted Date and Posted By */}
             <div className="flex items-center gap-4 text-xs text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Calendar size={12} />
                 <span>{formatPostedDate()}</span>
               </div>
-              
               {postedBy && (
                 <div className="flex items-center gap-1">
                   <User size={12} />
@@ -196,25 +174,23 @@ const JobCard: React.FC<JobCardProps> = ({
           </div>
 
           {/* Right Section */}
-          <div className="flex flex-col items-center gap-4 flex-shrink-0">
-            {/* Company Avatar */}
+          <div className="flex flex-col items-center gap-4">
             <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-secondary text-secondary-foreground font-bold text-lg border">
               {companyName.charAt(0).toUpperCase()}
             </div>
-
-            {/* Bookmark Button */}
             <Button
               variant="ghost"
               size="icon"
               onClick={handleBookmarkClick}
+              disabled={isPending}
               className={`h-8 w-8 rounded-full transition-colors ${
-                isBookmarked 
-                  ? 'text-primary bg-accent hover:bg-accent/80' 
+                isBookmarked
+                  ? 'text-primary bg-accent hover:bg-accent/80'
                   : 'hover:bg-accent'
               }`}
             >
               {isBookmarked ? (
-                <BookmarkCheck size={16} className="fill-current" />
+                <BookMarked size={16} className="" />
               ) : (
                 <Bookmark size={16} />
               )}
@@ -222,22 +198,21 @@ const JobCard: React.FC<JobCardProps> = ({
           </div>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex items-center justify-between mt-4 pt-4 border-t">
           <div className="flex gap-2">
-           <Link href={'/'}><Button size="sm" variant={'outline'}>
-              Apply Now
-            </Button></Link> 
-            <Link href={`/seeker/job/${id}`}><Button  variant={'outline'} size="sm">
-              <ExternalLink size={14} className="mr-1" />
-              View Details
-            </Button></Link>
+            <Link href={'/'}>
+              <Button size="sm" variant={'outline'}>
+                Apply Now
+              </Button>
+            </Link>
+            <Link href={`/seeker/job/${id}`}>
+              <Button variant={'outline'} size="sm">
+                <ExternalLink size={14} className="mr-1" />
+                View Details
+              </Button>
+            </Link>
           </div>
-          
-          {/* Company info */}
-          <div className="text-xs text-muted-foreground">
-            ID: {id.slice(-8)}
-          </div>
+          <div className="text-xs text-muted-foreground">ID: {id.slice(-8)}</div>
         </div>
       </CardContent>
     </Card>

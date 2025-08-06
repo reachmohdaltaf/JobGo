@@ -14,11 +14,7 @@ const CompanyDetail = () => {
   if (isError) return <p>Something went wrong while fetching the company details.</p>
 
   // Optional: handle clicking a job card
-  const handleJobClick = (job : any) => {
-    // e.g. navigate to job detail page
-    // router.push(`/jobs/${job.id}`)
-    console.log('Job clicked:', job)
-  }
+
 
   return (
     <div className="p-6 space-y-6">
@@ -39,8 +35,6 @@ const CompanyDetail = () => {
               <JobCard 
                 key={job.id} 
                 job={job} 
-                onJobClick={handleJobClick} 
-                // optionally pass onSave, onUnsave, isSaved props if you have saved jobs feature
               />
             ))}
           </div>

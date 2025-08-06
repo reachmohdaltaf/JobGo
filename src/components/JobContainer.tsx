@@ -14,7 +14,8 @@ console.log(jobs)
   {jobs?.map((job: any) => (
     <div key={job.id}>
      
-        <JobCard job={job}  />
+        <JobCard   isSaved={job.isSaved}  // Make sure this matches the data structure
+ job={job}  />
       
     </div>
   ))}
