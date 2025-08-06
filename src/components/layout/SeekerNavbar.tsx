@@ -119,7 +119,7 @@ const SeekerNavbar = () => {
   }
 
   return (
-        <header className="md:px-4 flex items-center justify-between bg-background lg:bg-transparent rounded-md bg-clip-padding backdrop-filter lg:backdrop-blur-xl lg:bg-opacity-30 fixed w-full md:h-16 h-16">
+        <header className="md:px-4 flex items-center justify-between bg-background lg:bg-transparent rounded-md bg-clip-padding backdrop-filter lg:backdrop-blur-xl lg:bg-opacity-30  w-full md:h-16 h-16">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         
         {/* Logo and Navigation */}
@@ -234,7 +234,7 @@ const SeekerNavbar = () => {
         <div className="flex items-center gap-3">
           
           {/* Post Job Button */}
-          <Link href="/employer/dashboard">
+          <Link href="/company">
             <Button variant="outline" size="sm" className="hidden sm:flex">
               Post a Job
             </Button>

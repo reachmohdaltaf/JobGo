@@ -3,7 +3,6 @@ import { compare } from "bcryptjs";
 import db from "@/lib/prisma";
 import { signAccessToken, signRefreshToken } from "@/lib/jwt";
 
-const allowedOrigin = "https://s6z3r1q0-3000.inc1.devtunnels.ms"; // <-- your frontend
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -39,10 +38,6 @@ export const POST = async (req: NextRequest) => {
       },
       {
         status: 200,
-        headers: {
-          "Access-Control-Allow-Origin": allowedOrigin,
-          "Access-Control-Allow-Credentials": "true",
-        },
       }
     );
 
@@ -69,15 +64,4 @@ export const POST = async (req: NextRequest) => {
   }
 };
 
-// Handle CORS preflight
-export const OPTIONS = async () => {
-  return new NextResponse(null, {
-    status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": allowedOrigin,
-      "Access-Control-Allow-Credentials": "true",
-      "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    },
-  });
-};
+

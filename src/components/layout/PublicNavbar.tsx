@@ -12,7 +12,7 @@ const PublicNavbar = () => {
   const { data: user, isLoading: userLoading, error } = useUser()
 
   return (
-        <div className="md:px-4 flex items-center justify-between bg-background lg:bg-transparent rounded-md bg-clip-padding backdrop-filter lg:backdrop-blur-xl lg:bg-opacity-30 fixed w-full md:h-16 h-16">
+        <div className="md:px-4 flex items-center justify-between bg-background lg:bg-transparent rounded-md bg-clip-padding backdrop-filter lg:backdrop-blur-xl lg:bg-opacity-30  w-full md:h-16 h-16">
         <div className="items-center gap-8 flex">
            <Link href={'/'}> 
             <Briefcase className="w-10 h-10" />
