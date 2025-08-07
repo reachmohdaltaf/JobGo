@@ -257,13 +257,13 @@ const SeekerNavbar = () => {
           ) : (
             <div className="flex items-center gap-3">
               
-              {/* Notifications */}
-              <Button variant="ghost" size="icon" className="relative">
+              
+              <Link href={"/seeker/dashboard/favourite"}><Button variant="ghost" size="icon" className="relative">
                 <Heart className="h-4 w-4" />
                 <span className="absolute -top-1 -right-1 h-3 w-3 bg-destructive rounded-full text-[10px] text-destructive-foreground flex items-center justify-center">
                   3
                 </span>
-              </Button>
+              </Button></Link>
 
 
               {/* User Dropdown */}
@@ -301,7 +301,7 @@ const SeekerNavbar = () => {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/seeker/saved-jobs" className="flex items-center">
+                    <Link href="/seeker/favourite" className="flex items-center">
                       <Heart className="mr-2 h-4 w-4" />
                       <span>Saved Jobs</span>
                     </Link>
