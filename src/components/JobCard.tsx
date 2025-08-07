@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import {
   Card,
   CardContent,
@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
   Bookmark,
-  BookmarkCheck,
   Briefcase,
   MapPin,
   DollarSign,
@@ -22,6 +21,9 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useAddToFavourite } from '@/hooks/useAddToFavourite'
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { useApplyJob } from '@/hooks/useApplyJob'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface Job {
   id: string
@@ -36,6 +38,7 @@ interface Job {
   createdAt: string
   postedByUserId: string
   companyId: string
+  hasApplied?: boolean // This comes from the API
   company?: {
     id: string
     name: string
@@ -70,28 +73,66 @@ const JobCard: React.FC<JobCardProps> = ({ job, isSaved = false }) => {
     createdAt,
     company,
     postedBy,
+    hasApplied, // Use the server data
   } = job
 
   const companyName =
     company?.name || job.employer_name || postedBy?.name || 'Unknown Company'
   const salaryRange = formatSalary(salary_min, salary_max)
 
-  const { mutate, isPending } = useAddToFavourite()
-
+  const [resume, setResume] = useState('')
+  const [coverLetter, setCoverLetter] = useState('')
   const [isBookmarked, setIsBookmarked] = useState(isSaved)
+  const [dialogOpen, setDialogOpen] = useState(false)
+  // Local state to track application status for immediate UI feedback
+  const [localHasApplied, setLocalHasApplied] = useState(hasApplied)
+
+  const { mutate: applyJob, isPending: isApplying } = useApplyJob()
+  const { mutate: toggleFavourite, isPending: isFavouriting } = useAddToFavourite()
+  const queryClient = useQueryClient()
 
   const handleBookmarkClick = (e: React.MouseEvent) => {
     e.stopPropagation()
 
-    mutate(id, {
-     onSuccess: (res) => {
-    setIsBookmarked(res.isFavourited)
-
-console.log(res.isFavourited)
-}
-
+    toggleFavourite(id, {
+      onSuccess: (res) => {
+        setIsBookmarked(res.isFavourited)
+      },
     })
   }
+
+  const handleApply = () => {
+    applyJob({
+      resume,
+      coverLetter,
+      jobId: id,
+      userId: '', // Backend mein authenticated user ka ID use hoga
+    }, {
+      onSuccess: () => {
+        // Immediate UI update
+        setLocalHasApplied(true)
+        
+        // Invalidate and refetch jobs to get updated hasApplied status
+        queryClient.invalidateQueries({ queryKey: ['jobs'] })
+        queryClient.invalidateQueries({ queryKey: ['appliedJobs'] })
+        
+        // Clear the form and close dialog
+        setResume('')
+        setCoverLetter('')
+        setDialogOpen(false)
+        
+        console.log('Successfully applied to job!')
+      },
+      onError: (error) => {
+        console.error('Application failed:', error)
+        // Keep local state as false if application fails
+        setLocalHasApplied(false)
+      }
+    })
+  }
+
+  // Use local state first, then fallback to server state
+  const isApplied = localHasApplied || hasApplied
 
   function formatSalary(min?: number, max?: number) {
     if (!min && !max) return null
@@ -182,7 +223,7 @@ console.log(res.isFavourited)
               variant="ghost"
               size="icon"
               onClick={handleBookmarkClick}
-              disabled={isPending}
+              disabled={isFavouriting}
               className={`h-8 w-8 rounded-full transition-colors ${
                 isBookmarked
                   ? 'text-primary bg-accent hover:bg-accent/80'
@@ -190,7 +231,7 @@ console.log(res.isFavourited)
               }`}
             >
               {isBookmarked ? (
-                <BookMarked size={16} className="" />
+                <BookMarked size={16} />
               ) : (
                 <Bookmark size={16} />
               )}
@@ -200,13 +241,60 @@ console.log(res.isFavourited)
 
         <div className="flex items-center justify-between mt-4 pt-4 border-t">
           <div className="flex gap-2">
-            <Link href={'/'}>
-              <Button size="sm" variant={'outline'}>
-                Apply Now
-              </Button>
-            </Link>
+            {/* Apply Dialog */}
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              <DialogTrigger asChild>
+                {isApplied ? (
+                  <Button variant="outline" size="sm" disabled className="text-green-600 border-green-600">
+                    Applied ✓
+                  </Button>
+                ) : (
+                  <Button size="sm">Apply</Button>
+                )}
+              </DialogTrigger>
+
+              {!isApplied && (
+                <DialogContent className="flex h-96 w-full max-w-md flex-col items-center justify-center gap-6 mx-auto">
+                  <DialogTitle className="text-2xl font-semibold text-center">
+                    Apply Here
+                  </DialogTitle>
+
+                  <div className="w-full">
+                    <label className="text-sm font-medium">Resume (Text or Link)</label>
+                    <input
+                      type="text"
+                      className="w-full mt-1 p-2 border rounded-md text-sm"
+                      placeholder="Enter resume text or link"
+                      value={resume}
+                      onChange={(e) => setResume(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="w-full">
+                    <label className="text-sm font-medium">Cover Letter</label>
+                    <textarea
+                      className="w-full mt-1 p-2 border rounded-md text-sm"
+                      rows={4}
+                      placeholder="Write your cover letter..."
+                      value={coverLetter}
+                      onChange={(e) => setCoverLetter(e.target.value)}
+                    />
+                  </div>
+
+                  <Button
+                    className="w-full"
+                    onClick={handleApply}
+                    disabled={!resume || !coverLetter || isApplying}
+                  >
+                    {isApplying ? 'Applying...' : 'Apply'}
+                  </Button>
+                </DialogContent>
+              )}
+            </Dialog>
+
+            {/* View Details */}
             <Link href={`/seeker/job/${id}`}>
-              <Button variant={'outline'} size="sm">
+              <Button variant="outline" size="sm">
                 <ExternalLink size={14} className="mr-1" />
                 View Details
               </Button>

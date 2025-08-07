@@ -33,6 +33,7 @@ import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { useUser } from "@/hooks/getUser"
 import ThemeToggle from "../ThemeToggle"
+import LogoutButton from "../LogoutButton"
 
 interface Job {
   id: string
@@ -128,25 +129,15 @@ const SeekerNavbar = () => {
             <Briefcase/>
           </Link>
           
-          <nav className="hidden md:flex items-center space-x-6">
+          <nav className="flex items-center space-x-6">
             <Link 
               href="/seeker/dashboard" 
               className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
               Jobs
             </Link>
-            <Link 
-              href="/seeker/companies" 
-              className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
-            >
-              Companies
-            </Link>
-            <Link 
-              href="/seeker/services" 
-              className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
-            >
-              Services
-            </Link>
+           
+           
           </nav>
         </div>
 
@@ -295,7 +286,7 @@ const SeekerNavbar = () => {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/seeker/applications" className="flex items-center">
+                    <Link href="/seeker/myApplications" className="flex items-center">
                       <FileText className="mr-2 h-4 w-4" />
                       <span>My Applications</span>
                     </Link>
@@ -313,13 +304,10 @@ const SeekerNavbar = () => {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem 
-                    onClick={handleLogout}
-                    className="text-destructive focus:text-destructive"
-                  >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                  </DropdownMenuItem>
+                 <DropdownMenuItem asChild>
+  <LogoutButton />
+</DropdownMenuItem>
+
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
